@@ -1,0 +1,13 @@
+- name: 'mkdir {{dir}},if exist,do nothing'
+  file: 'path={{dir}} state=directory'
+
+- name: 'mkdir slave-02,if exist,do nothing'
+  file: 'path=/usr/local/redis-slave-02 state=directory'
+
+- name: copy redis.conf.j2
+  template: 
+    src: "redis.conf.j2" 
+    dest: "/usr/local/redis-slave-02/redis.conf"
+
+- name: start redis slave
+  shell: 'nohup redis-server /usr/local/redis-slave-02/redis.conf &'
