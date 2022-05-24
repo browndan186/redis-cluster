@@ -2,7 +2,7 @@
 - name: start redis-sentinel
   become: true
   systemd:
-      name: redis-sentinel
+      name: redis
       state: started
       daemon_reload: yes
       enabled: yes

@@ -6,6 +6,6 @@
   command: 'chown redis:redis /etc/redis/sentinel.conf'
 - name: copy sentinel service
   become: true
-  template: 'src=redis.service.j2 dest=/etc/systemd/system/redis.service'
+  template: 'src=redis-sentinel.service.j2 dest=/etc/systemd/system/redis.service'
   notify:
      - start redis-sentinel
