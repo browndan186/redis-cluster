@@ -1,0 +1,37 @@
+- name: install baseenv packages
+  become: yes
+  apt:
+    name: [ 'make', 'perl', 'unzip'] 
+    state: present
+    update_cache: yes
+- name: stop ubuntuS firewalld
+  become: yes
+  service:
+    name: ufw
+    state: stopped
+    enabled: false
+- name: Set up Redis 6 repo
+  shell: |
+      curl https://packages.redis.io/gpg | sudo apt-key add -
+      echo "deb https://packages.redis.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/redis.list
+      #- name: copy redis-{{ver}}.tar.gz 
+      #  become: yes
+      #  copy: 'src=redis-6.2.6.tar.gz dest=/usr/local'
+      #- name: 'unarchive redis-6.2.6.tar.gz'
+      #  become: yes
+      #  unarchive: 'src=/usr/local/redis-{{ver}}.tar.gz dest=/usr/local copy=no'
+- name: create redis service file
+  become: yes
+  command: touch /etc/systemd/system/redis.service
+- name: copy service file
+  become: yes
+  template:
+      src: redis-service.j2
+      dest: /etc/systemd/system/redis.service
+- name: install redis
+  become: yes
+  apt:
+    name: redis-server
+    update_cache: yes
+  notify:
+    - Enable Redis
